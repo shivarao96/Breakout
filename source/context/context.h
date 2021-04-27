@@ -2,10 +2,10 @@
 #include <glad/glad.h>
 #include <glfw3.h>
 
-class context
+class Context
 {
 public:
-	context(const char* windowName, float width, float height);
+	Context(const char* windowName, float width, float height);
 	GLFWwindow* getWindow() const;
 private:
 	void init(const char* windowName, float width, float height) noexcept;

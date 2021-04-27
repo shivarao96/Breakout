@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <glfw3.h>
 #include "../context/context.h"
+#include "../shaderHandler/shaderHandler.h"
 
 class Application
 {
@@ -13,6 +14,6 @@ private:
 	float m_screenWidth;
 	float m_screenHeight;
 	
-	context m_context;
+	Context m_context;
 };
 

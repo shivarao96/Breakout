@@ -27,12 +27,18 @@
     <ClCompile Include="source\context\context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\shaderHandler\shaderHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\application\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\context\context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shaderHandler\shaderHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

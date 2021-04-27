@@ -145,12 +145,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\shaderHandler\shaderHandler.cpp" />
     <ClCompile Include="source\context\context.cpp" />
     <ClCompile Include="source\application\Application.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\shaderHandler\shaderHandler.h" />
     <ClInclude Include="source\context\context.h" />
     <ClInclude Include="source\application\Application.h" />
   </ItemGroup>
