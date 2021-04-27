@@ -4,6 +4,7 @@
 
 class ShaderHandler
 {
+public:
 	void compileShader(const char* vertexSource, const char* fragmentSource, const char* geometricSource);
 	void useShader();
 	ShaderHandler& getShader();
@@ -13,6 +14,7 @@ class ShaderHandler
 	void setVector3f(const char* paramName, const glm::vec3& value, bool useShader = false);
 	void setVector4f(const char* paramName, const glm::vec4& value, bool useShader = false);
 	void setMatrix4(const char* paramName, const glm::mat4& value, bool useShader = false);
+	void clear();
 
 	unsigned int getShaderId();
 private:

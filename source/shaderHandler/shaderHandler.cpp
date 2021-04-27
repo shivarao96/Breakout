@@ -109,6 +109,11 @@ void ShaderHandler::setMatrix4(const char* paramName, const glm::mat4& value, bo
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderId, paramName), 1, false, &value[0][0]); // here problem might come
 }
 
+void ShaderHandler::clear()
+{
+	glDeleteProgram(m_shaderId);
+}
+
 unsigned int ShaderHandler::getShaderId()
 {
 	return m_shaderId;
