@@ -1,17 +1,17 @@
 #include "context.h"
 #include <iostream>
 
-context::context(const char* windowName, float width, float height)
+Context::Context(const char* windowName, float width, float height)
 {
 	init(windowName, width, height);
 }
 
-GLFWwindow* context::getWindow() const
+GLFWwindow* Context::getWindow() const
 {
 	return m_pWindow;
 }
 
-void context::init(const char* windowName, float width, float height) noexcept
+void Context::init(const char* windowName, float width, float height) noexcept
 {
 	initGlfw();
 	if (!initWindowAndContext(windowName, width, height)) {
@@ -20,7 +20,7 @@ void context::init(const char* windowName, float width, float height) noexcept
 	}
 }
 
-void context::initGlfw() noexcept
+void Context::initGlfw() noexcept
 {
 	if (!glfwInit())
 	{
@@ -29,7 +29,7 @@ void context::initGlfw() noexcept
 	}
 }
 
-bool context::initWindowAndContext(const char* windowName, float width, float height) noexcept
+bool Context::initWindowAndContext(const char* windowName, float width, float height) noexcept
 {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -52,7 +52,7 @@ bool context::initWindowAndContext(const char* windowName, float width, float he
 	return true;
 }
 
-void context::frameBufferWindowCallback(GLFWwindow* window, int width, int height)
+void Context::frameBufferWindowCallback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
