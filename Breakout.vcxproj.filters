@@ -21,7 +21,7 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\application\Application.cpp">
+    <ClCompile Include="source\application\application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\context\context.cpp">
@@ -36,9 +36,12 @@
     <ClCompile Include="source\resourceHandler\resourceHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\gameMechanic\gameMechanic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\application\Application.h">
+    <ClInclude Include="source\application\application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\context\context.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resourceHandler\resourceHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gameMechanic\gameMechanic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

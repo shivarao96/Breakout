@@ -145,19 +145,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\gameMechanic\gameMechanic.cpp" />
     <ClCompile Include="source\resourceHandler\resourceHandler.cpp" />
     <ClCompile Include="source\shaderHandler\shaderHandler.cpp" />
     <ClCompile Include="source\context\context.cpp" />
-    <ClCompile Include="source\application\Application.cpp" />
+    <ClCompile Include="source\application\application.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\textureHandler\textureHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\gameMechanic\gameMechanic.h" />
     <ClInclude Include="source\resourceHandler\resourceHandler.h" />
     <ClInclude Include="source\shaderHandler\shaderHandler.h" />
     <ClInclude Include="source\context\context.h" />
-    <ClInclude Include="source\application\Application.h" />
+    <ClInclude Include="source\application\application.h" />
     <ClInclude Include="source\textureHandler\textureHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
