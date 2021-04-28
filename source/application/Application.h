@@ -4,7 +4,6 @@
 #include "../context/context.h"
 #include "../shaderHandler/shaderHandler.h"
 #include "../textureHandler/textureHandler.h"
-#include "../resourceHandler/resourceHandler.h"
 #include "../gameMechanic/gameMechanic.h"
 
 class Application

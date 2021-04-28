@@ -37,6 +37,7 @@ void Application::runApp()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		// render here
+		m_gameMechanic.render();
 		glfwSwapBuffers(m_context.getWindow());
 	}
 	m_gameMechanic.clear();

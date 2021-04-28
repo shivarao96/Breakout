@@ -39,6 +39,7 @@ void ShaderHandler::compileShader(const char* vertexSource, const char* fragment
 		geomtricShaderProgram = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geomtricShaderProgram, 1, &geometricSource, NULL);
 		glCompileShader(geomtricShaderProgram);
+		std::cout << "This should not get triggered now !" << std::endl;
 		checkCompileError(geomtricShaderProgram, "GEOMETRIC");
 	}
 	

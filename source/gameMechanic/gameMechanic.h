@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../context/context.h"
+class SpriteRenderer;
+class Context;
 
 enum class GameState {
 	GAME_MENU,
@@ -22,7 +23,8 @@ public:
 	void clear();
 private:
 	GameState state;
-	int width, height;
-	Context* m_context;
+	int m_width, m_height;
+	Context* m_context = nullptr;
+	SpriteRenderer* m_pSpriteRenderer = nullptr;
 };
 

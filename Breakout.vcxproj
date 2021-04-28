@@ -153,6 +153,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\textureHandler\textureHandler.cpp" />
+    <ClCompile Include="source\spriteRenderer\spriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\gameMechanic\gameMechanic.h" />
@@ -161,6 +162,11 @@
     <ClInclude Include="source\context\context.h" />
     <ClInclude Include="source\application\application.h" />
     <ClInclude Include="source\textureHandler\textureHandler.h" />
+    <ClInclude Include="source\spriteRenderer\spriteRenderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\sprite.fs" />
+    <None Include="shaders\sprite.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
