@@ -12,6 +12,7 @@ TextureHandler::TextureHandler()
 	,m_FilterMax(GL_LINEAR)
 {
 	glGenTextures(1, &m_ID);
+	glBindTexture(GL_TEXTURE_2D, m_ID);
 }
 
 TextureHandler::~TextureHandler()

@@ -1,7 +1,6 @@
 #include "resourceHandler.h"
 #include <glad/glad.h>
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <sstream>
 #include <fstream>
@@ -76,7 +75,7 @@ ShaderHandler ResourceHandler::loadShaderFile(const char* vShaderFile, const cha
 	const char* gShaderCode = geometricCode.c_str();
 
 	ShaderHandler shader;
-	shader.compileShader(vShaderCode, fShaderCode, gShaderCode);
+	shader.compileShader(vShaderCode, fShaderCode, gShaderFile != NULL ? gShaderCode : nullptr);
 
 	return shader;
 }
