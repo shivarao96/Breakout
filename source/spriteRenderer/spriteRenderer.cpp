@@ -17,10 +17,11 @@ void SpriteRenderer::drawSprite(TextureHandler& texHandler, const glm::vec2& pos
 	m_pShaderHandler->useShader();
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(pos, 0.0f));
+
 	model = glm::translate(model, glm::vec3(0.5 * size.x, 0.5 * size.y, 0.0f));
 	model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
-	model = glm::scale(model, glm::vec3(1.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
 
 	m_pShaderHandler->setMatrix4("model", model);
 	m_pShaderHandler->setVector3f("spriteColor", color);

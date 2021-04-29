@@ -5,7 +5,6 @@ bool Context::Keys[1024];
 
 Context::Context(const char* windowName, float width, float height)
 {
-	std::cout << "i got created" << std::endl;
 	init(windowName, width, height);
 }
 

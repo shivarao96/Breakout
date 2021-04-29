@@ -26,7 +26,7 @@ void GameMechanic::init()
 
 	m_pSpriteRenderer = new SpriteRenderer(ResourceHandler::get().getShader("sprite"));
 
-	ResourceHandler::get().loadTexture("assets/textures/sprite-test.png", true, "face");
+	ResourceHandler::get().loadTexture("assets/textures/awesomeface.png", true, "face");
 }
 
 void GameMechanic::update(float deltaTime)
