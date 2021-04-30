@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include "../gameLevel/gameLevel.h"
+
 class SpriteRenderer;
 class Context;
 
@@ -22,9 +25,12 @@ public:
 	void processInput(float deltaTime);
 	void clear();
 private:
-	GameState state;
+	GameState m_state = GameState::GAME_ACTIVE;
 	int m_width, m_height;
 	Context* m_context = nullptr;
 	SpriteRenderer* m_pSpriteRenderer = nullptr;
+	GameObject* m_player;
+	std::vector<GameLevel> m_gameLevels;
+	unsigned int m_currentlevel = 0;
 };
 

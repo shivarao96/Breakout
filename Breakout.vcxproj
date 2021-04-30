@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\gameLevel\gameLevel.cpp" />
+    <ClCompile Include="source\gameObject\gameObject.cpp" />
     <ClCompile Include="source\gameMechanic\gameMechanic.cpp" />
     <ClCompile Include="source\resourceHandler\resourceHandler.cpp" />
     <ClCompile Include="source\shaderHandler\shaderHandler.cpp" />
@@ -157,6 +159,8 @@
     <ClCompile Include="source\spriteRenderer\spriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\gameLevel\gameLevel.h" />
+    <ClInclude Include="source\gameObject\gameObject.h" />
     <ClInclude Include="source\gameMechanic\gameMechanic.h" />
     <ClInclude Include="source\resourceHandler\resourceHandler.h" />
     <ClInclude Include="source\shaderHandler\shaderHandler.h" />
@@ -166,6 +170,11 @@
     <ClInclude Include="source\spriteRenderer\spriteRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\levels\bounce.level" />
+    <None Include="assets\levels\spaceInvader.level" />
+    <None Include="assets\levels\standard.level" />
+    <None Include="assets\levels\standard2.level" />
+    <None Include="assets\levels\test.level" />
     <None Include="shaders\sprite.fs" />
     <None Include="shaders\sprite.vs" />
   </ItemGroup>

@@ -45,6 +45,12 @@
     <ClCompile Include="source\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\gameObject\gameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gameLevel\gameLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\application\application.h">
@@ -68,9 +74,20 @@
     <ClInclude Include="source\spriteRenderer\spriteRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\gameObject\gameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gameLevel\gameLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\sprite.vs" />
     <None Include="shaders\sprite.fs" />
+    <None Include="assets\levels\standard.level" />
+    <None Include="assets\levels\standard2.level" />
+    <None Include="assets\levels\spaceInvader.level" />
+    <None Include="assets\levels\bounce.level" />
+    <None Include="assets\levels\test.level" />
   </ItemGroup>
 </Project>
