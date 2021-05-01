@@ -15,12 +15,14 @@ public:
 	bool isDestroyed() const;
 	bool isSolid() const;
 	const glm::vec2& getPos() const;
+	const glm::vec2& getVelocity() const;
 
 	void setDestroyedState(bool state);
 	void setSolidState(bool state);
 	void setPosition(const glm::vec2& pos);
+	void setVelocity(const glm::vec2& velocity);
 
-private:
+protected:
 	TextureHandler* m_pSprite = nullptr;
 	glm::vec2 m_position = glm::vec2(0.0f);
 	glm::vec2 m_velocity = glm::vec2(0.0f);

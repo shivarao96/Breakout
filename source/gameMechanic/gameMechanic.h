@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "../gameLevel/gameLevel.h"
+#include "../gameObject/ballObject/ballObject.h"
 
 class SpriteRenderer;
 class Context;
@@ -29,8 +30,10 @@ private:
 	int m_width, m_height;
 	Context* m_context = nullptr;
 	SpriteRenderer* m_pSpriteRenderer = nullptr;
-	GameObject* m_player;
 	std::vector<GameLevel> m_gameLevels;
 	unsigned int m_currentlevel = 0;
+	
+	GameObject* m_player;
+	BallObject* m_pBall;
 };
 

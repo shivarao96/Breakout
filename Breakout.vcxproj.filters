@@ -51,6 +51,9 @@
     <ClCompile Include="source\gameLevel\gameLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\gameObject\ballObject\ballObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\application\application.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\gameLevel\gameLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gameObject\ballObject\ballObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
