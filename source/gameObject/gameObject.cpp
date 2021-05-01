@@ -1,4 +1,5 @@
 #include "gameObject.h"
+#include <iostream>
 
 GameObject::GameObject()
 {}
@@ -43,6 +44,11 @@ const glm::vec2& GameObject::getPos() const
 	return m_position;
 }
 
+const glm::vec2& GameObject::getVelocity() const
+{
+	return m_velocity;
+}
+
 void GameObject::setDestroyedState(bool state)
 {
 	m_isDestroyed = state;
@@ -56,4 +62,9 @@ void GameObject::setSolidState(bool state)
 void GameObject::setPosition(const glm::vec2& pos)
 {
 	m_position = pos;
+}
+
+void GameObject::setVelocity(const glm::vec2& velocity)
+{
+	m_velocity = velocity;
 }

@@ -3,12 +3,21 @@
 #include "../spriteRenderer/spriteRenderer.h"
 #include "../resourceHandler/resourceHandler.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 const glm::vec2 playerSize = {
-	200.0f,
+	100.0f,
 	20.0f
 };
 const float velocity = 500.0f;
+
+static bool startCheckingCollision = false;
+
+const glm::vec2  initialBallVelocity = {
+	100.0f,
+	-300.0f
+};
+const float ballRadius = 12.5f;
 
 GameMechanic::GameMechanic(int width, int height, Context& context)
 	:m_width(width)
@@ -20,6 +29,7 @@ GameMechanic::GameMechanic(int width, int height, Context& context)
 GameMechanic::~GameMechanic()
 {
 	m_context = NULL;
+	delete m_player;
 	delete m_pSpriteRenderer;
 }
 
@@ -45,11 +55,21 @@ void GameMechanic::init()
 
 	m_player = new GameObject(
 		ResourceHandler::get().getTexture("paddle"),
-		glm::vec2(
-			m_width / 2.0f - playerSize.x,
+		{
+			m_width / 2.0f - playerSize.x /2.0f,
 			m_height - playerSize.y
-		),
+		},
 		playerSize
+	);
+
+	m_pBall = new BallObject(
+		ResourceHandler::get().getTexture("face"),
+		ballRadius,
+		{
+			m_width / 2.0f - ballRadius,
+			m_height - (ballRadius * 2) - playerSize.y
+		},
+		initialBallVelocity
 	);
 
 	m_currentlevel = 2;
@@ -57,15 +77,26 @@ void GameMechanic::init()
 
 void GameMechanic::update(float deltaTime)
 {
+	glm::vec2 newPos = m_pBall->move(deltaTime, m_width);
+	if (startCheckingCollision) {
+		if (
+			newPos.x >= m_player->getPos().x &&
+			newPos.x <= m_player->getPos().x + playerSize.x &&
+			newPos.y >= m_player->getPos().y - playerSize.y
+			) {
+			m_pBall->setVelocity({m_pBall->getVelocity().x, -m_pBall->getVelocity().y});
+			std::cout << "Collision" << std::endl;
+		}
+	}
 }
 
 void GameMechanic::render()
 {
 	if (m_state == GameState::GAME_ACTIVE) {
 		m_pSpriteRenderer->drawSprite(ResourceHandler::get().getTexture("background"), glm::vec2(0.0f, 0.0f), glm::vec2(m_width, m_height), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
-		m_player->draw(*m_pSpriteRenderer);
-
 		m_gameLevels[m_currentlevel].draw(*m_pSpriteRenderer);
+		m_player->draw(*m_pSpriteRenderer);
+		m_pBall->draw(*m_pSpriteRenderer);
 	}
 
 }
@@ -77,12 +108,32 @@ void GameMechanic::processInput(float deltaTime)
 		if (m_context->Keys[GLFW_KEY_A]) {
 			if (m_player->getPos().x >= 0.0f) {
 				m_player->setPosition({ m_player->getPos().x - vel, m_player->getPos().y });
+				if (m_pBall->isStuck()) {
+					m_pBall->setPosition({ m_pBall->getPos().x - vel, m_pBall->getPos().y });
+				}
 			}
 		}
 		if (m_context->Keys[GLFW_KEY_D]) {
 			if (m_player->getPos().x <= m_width - playerSize.x) {
 				m_player->setPosition({ m_player->getPos().x + vel, m_player->getPos().y });
+				if (m_pBall->isStuck()) {
+					m_pBall->setPosition({ m_pBall->getPos().x + vel, m_pBall->getPos().y });
+				}
 			}
+		}
+		if (m_context->Keys[GLFW_KEY_SPACE]) {
+			startCheckingCollision = true;
+			m_pBall->setStuckState(false);
+		}
+		if (m_context->Keys[GLFW_KEY_LEFT_SHIFT]) {
+			startCheckingCollision = false;
+			m_pBall->reset(
+				{
+					m_player->getPos().x + playerSize.x / 2 - ballRadius,
+					m_player->getPos().y - playerSize.y / 2- ballRadius
+				},
+				initialBallVelocity
+			);
 		}
 	} 
 }
