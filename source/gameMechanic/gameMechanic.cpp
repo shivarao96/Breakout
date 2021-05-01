@@ -10,7 +10,6 @@ const glm::vec2 playerSize = {
 	20.0f
 };
 const float velocity = 500.0f;
-
 static bool startCheckingCollision = false;
 
 const glm::vec2  initialBallVelocity = {
@@ -18,7 +17,6 @@ const glm::vec2  initialBallVelocity = {
 	-300.0f
 };
 const float ballRadius = 12.5f;
-
 GameMechanic::GameMechanic(int width, int height, Context& context)
 	:m_width(width)
 	,m_height(height)
@@ -77,14 +75,17 @@ void GameMechanic::init()
 
 void GameMechanic::update(float deltaTime)
 {
-	glm::vec2 newPos = m_pBall->move(deltaTime, m_width);
-	if (startCheckingCollision) {
-		if (
-			checkCollison(*m_pBall, *m_player)
-			) {
-			m_pBall->setVelocity({m_pBall->getVelocity().x, -m_pBall->getVelocity().y});
-			//m_pBall->setPosition({ m_pBall->getPos().x, m_player->getPos().y - playerSize.y / 2 - ballRadius });
-		}
+	m_pBall->move(deltaTime, m_width);
+	Collision collision = checkCollison(*m_pBall, *m_player);
+	if (!m_pBall->isStuck() && collision.isCollided) {
+		float centerBoard = m_player->getPos().x + playerSize.x / 2.0f;
+		float distance = (m_pBall->getPos().x + ballRadius) - centerBoard;
+		float percentage = distance / (playerSize.x / 2.0f);
+
+		glm::vec2 oldVelocity = m_pBall->getVelocity();
+		m_pBall->setVelocity({ initialBallVelocity.x * 2.0f * percentage, -1.0f * std::abs(m_pBall->getVelocity().y)});
+		glm::vec2 newVelocity = glm::normalize(m_pBall->getVelocity()) * glm::length(oldVelocity);
+		m_pBall->setVelocity(newVelocity);
 	}
 	doCollisions();
 }
@@ -121,11 +122,11 @@ void GameMechanic::processInput(float deltaTime)
 			}
 		}
 		if (m_context->Keys[GLFW_KEY_SPACE]) {
-			startCheckingCollision = true;
+			//startCheckingCollision = true;
 			m_pBall->setStuckState(false);
 		}
 		if (m_context->Keys[GLFW_KEY_LEFT_SHIFT]) {
-			startCheckingCollision = false;
+			//startCheckingCollision = false;
 			m_pBall->reset(
 				{
 					m_player->getPos().x + playerSize.x / 2 - ballRadius,
@@ -141,7 +142,7 @@ void GameMechanic::clear()
 {
 }
 
-bool GameMechanic::checkCollison(BallObject& ball, GameObject& gameObj)
+Collision GameMechanic::checkCollison(BallObject& ball, GameObject& gameObj)
 {
 	glm::vec2 ballCenter = glm::vec2(ball.getPos() + ballRadius);
 	glm::vec2 aabb_half_size = glm::vec2(gameObj.getSize().x / 2.0f, gameObj.getSize().y / 2.0f);
@@ -151,21 +152,67 @@ bool GameMechanic::checkCollison(BallObject& ball, GameObject& gameObj)
 	glm::vec2 clamped = glm::clamp(difference, -aabb_half_size, aabb_half_size);
 	glm::vec2 closest = aabbCenter + clamped;
 	difference = closest - ballCenter;
-	return glm::length(difference) < ballRadius;
+	if (glm::length(difference) <= ballRadius) {
+		return Collision(true, getCollisionDirection(difference), difference);
+	}
+	else {
+		return Collision(false, CollisionDirection::UP, glm::vec2(0.0f)) ;
+	}
 }
 
 void GameMechanic::doCollisions()
 {
 	for (auto& brick : m_gameLevels[m_currentlevel].getBricks()) {
 		if (!brick.isDestroyed()) {
-			if (checkCollison(*m_pBall, brick)) {
-				if (brick.isSolid()) {
-					m_pBall->setVelocity({ m_pBall->getVelocity().x, -m_pBall->getVelocity().y });
+			Collision collision = checkCollison(*m_pBall, brick);
+			if (collision.isCollided) {
+				if (!brick.isSolid()) {
+					brick.setDestroyedState(true);
+				}
+				CollisionDirection dir = collision.direction;
+				const glm::vec2 diff = collision.difference;
+				if (dir == CollisionDirection::LEFT || dir == CollisionDirection::RIGHT) {
+					m_pBall->setVelocity(glm::vec2(-m_pBall->getVelocity().x, m_pBall->getVelocity().y));
+					float penetration = ballRadius - std::abs(diff.x);
+					if (dir == CollisionDirection::LEFT) {
+						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x + penetration, m_pBall->getPos().y));
+					}
+					else {
+						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x - penetration, m_pBall->getPos().y));
+					}
 				}
 				else {
-					brick.setDestroyedState(true);
+					m_pBall->setVelocity(glm::vec2(m_pBall->getVelocity().x, -m_pBall->getVelocity().y));
+					float penetration = ballRadius - std::abs(diff.y);
+					if (dir == CollisionDirection::DOWN) {
+						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x, m_pBall->getPos().y + penetration));
+					}
+					else {
+						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x, m_pBall->getPos().y - penetration));
+					}
 				}
 			}
 		}
 	}
+}
+
+CollisionDirection GameMechanic::getCollisionDirection(const glm::vec2& difference)
+{
+	int max = 0.0f;
+	int bestMatch = -1;
+	const glm::vec2 normalDirection[] = {
+		glm::vec2(0.0f, 1.0f),  // up
+		glm::vec2(1.0f, 0.0f),  // right
+		glm::vec2(0.0f, -1.0f), // down
+		glm::vec2(-1.0f, 0.0f), // left
+	};
+
+	for (int i = 0; i < 4; i++) {
+		float dotProduct = glm::dot(glm::normalize(difference), normalDirection[i]);
+		if (dotProduct > max) {
+			bestMatch = i;
+			max = dotProduct;
+		}
+	}
+	return (CollisionDirection)bestMatch;
 }

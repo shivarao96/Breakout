@@ -3,9 +3,26 @@
 #include <vector>
 #include "../gameLevel/gameLevel.h"
 #include "../gameObject/ballObject/ballObject.h"
+#include <glm/glm.hpp>
 
 class SpriteRenderer;
 class Context;
+
+enum class CollisionDirection {
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT
+};
+
+struct Collision {
+	bool isCollided;
+	CollisionDirection direction;
+	glm::vec2 difference;
+
+	Collision(bool isCollided, CollisionDirection direction, const glm::vec2& difference):isCollided(isCollided), direction(direction), difference(difference) {}
+};
+
 
 enum class GameState {
 	GAME_MENU,
@@ -13,6 +30,7 @@ enum class GameState {
 	GAME_WIN,
 	GAME_LOSS
 };
+
 
 class GameMechanic
 {
@@ -26,8 +44,9 @@ public:
 	void processInput(float deltaTime);
 	void clear();
 private:
-	bool checkCollison(BallObject& ball, GameObject& gameObj);
+	Collision checkCollison(BallObject& ball, GameObject& gameObj);
 	void doCollisions();
+	static CollisionDirection getCollisionDirection(const glm::vec2& difference);
 	
 	GameState m_state = GameState::GAME_ACTIVE;
 	int m_width, m_height;
@@ -36,7 +55,8 @@ private:
 	std::vector<GameLevel> m_gameLevels;
 	unsigned int m_currentlevel = 0;
 	
-	GameObject* m_player;
-	BallObject* m_pBall;
+	GameObject* m_player = nullptr;
+	BallObject* m_pBall = nullptr;
 };
+
 
