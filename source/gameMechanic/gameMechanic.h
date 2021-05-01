@@ -26,6 +26,9 @@ public:
 	void processInput(float deltaTime);
 	void clear();
 private:
+	bool checkCollison(BallObject& ball, GameObject& gameObj);
+	void doCollisions();
+	
 	GameState m_state = GameState::GAME_ACTIVE;
 	int m_width, m_height;
 	Context* m_context = nullptr;

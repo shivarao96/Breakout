@@ -8,7 +8,7 @@ class GameObject
 {
 public:
 	GameObject();
-	GameObject(TextureHandler& sprite, const glm::vec2 pos, const glm::vec2 size, const glm::vec2 velocity = glm::vec2(0.0f), const glm::vec3 color = glm::vec3(1.0f) );
+	GameObject(TextureHandler& sprite, const glm::vec2 pos, const glm::vec2 size, const glm::vec2 velocity = glm::vec2(0.0f), const glm::vec3 color = glm::vec3(1.0f), bool isSolid = false);
 	~GameObject();
 	virtual void draw(SpriteRenderer& spriteRenderer);
 	
@@ -16,6 +16,7 @@ public:
 	bool isSolid() const;
 	const glm::vec2& getPos() const;
 	const glm::vec2& getVelocity() const;
+	const glm::vec2& getSize() const;
 
 	void setDestroyedState(bool state);
 	void setSolidState(bool state);

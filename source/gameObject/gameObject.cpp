@@ -4,12 +4,13 @@
 GameObject::GameObject()
 {}
 
-GameObject::GameObject(TextureHandler& sprite, const glm::vec2 pos, const glm::vec2 size, const glm::vec2 velocity, const glm::vec3 color)
+GameObject::GameObject(TextureHandler& sprite, const glm::vec2 pos, const glm::vec2 size, const glm::vec2 velocity, const glm::vec3 color, bool isSolid)
 	:m_pSprite(&sprite)
 	,m_position(pos)
 	,m_size(size)
 	,m_velocity(velocity)
 	,m_color(color)
+	,m_isSolid(isSolid)
 {
 }
 
@@ -47,6 +48,11 @@ const glm::vec2& GameObject::getPos() const
 const glm::vec2& GameObject::getVelocity() const
 {
 	return m_velocity;
+}
+
+const glm::vec2& GameObject::getSize() const
+{
+	return m_size;
 }
 
 void GameObject::setDestroyedState(bool state)
