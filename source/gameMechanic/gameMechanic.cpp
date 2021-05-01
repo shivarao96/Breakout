@@ -80,14 +80,13 @@ void GameMechanic::update(float deltaTime)
 	glm::vec2 newPos = m_pBall->move(deltaTime, m_width);
 	if (startCheckingCollision) {
 		if (
-			newPos.x >= m_player->getPos().x &&
-			newPos.x <= m_player->getPos().x + playerSize.x &&
-			newPos.y >= m_player->getPos().y - playerSize.y
+			checkCollison(*m_pBall, *m_player)
 			) {
 			m_pBall->setVelocity({m_pBall->getVelocity().x, -m_pBall->getVelocity().y});
-			std::cout << "Collision" << std::endl;
+			//m_pBall->setPosition({ m_pBall->getPos().x, m_player->getPos().y - playerSize.y / 2 - ballRadius });
 		}
 	}
+	doCollisions();
 }
 
 void GameMechanic::render()
@@ -140,4 +139,33 @@ void GameMechanic::processInput(float deltaTime)
 
 void GameMechanic::clear()
 {
+}
+
+bool GameMechanic::checkCollison(BallObject& ball, GameObject& gameObj)
+{
+	glm::vec2 ballCenter = glm::vec2(ball.getPos() + ballRadius);
+	glm::vec2 aabb_half_size = glm::vec2(gameObj.getSize().x / 2.0f, gameObj.getSize().y / 2.0f);
+	glm::vec2 aabbCenter = glm::vec2(gameObj.getPos().x + aabb_half_size.x, gameObj.getPos().y + aabb_half_size.y);
+
+	glm::vec2 difference = ballCenter - aabbCenter;
+	glm::vec2 clamped = glm::clamp(difference, -aabb_half_size, aabb_half_size);
+	glm::vec2 closest = aabbCenter + clamped;
+	difference = closest - ballCenter;
+	return glm::length(difference) < ballRadius;
+}
+
+void GameMechanic::doCollisions()
+{
+	for (auto& brick : m_gameLevels[m_currentlevel].getBricks()) {
+		if (!brick.isDestroyed()) {
+			if (checkCollison(*m_pBall, brick)) {
+				if (brick.isSolid()) {
+					m_pBall->setVelocity({ m_pBall->getVelocity().x, -m_pBall->getVelocity().y });
+				}
+				else {
+					brick.setDestroyedState(true);
+				}
+			}
+		}
+	}
 }

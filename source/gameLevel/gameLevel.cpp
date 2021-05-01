@@ -59,6 +59,11 @@ bool GameLevel::isAllDestroyed() const
 	return true;
 }
 
+std::vector<GameObject>& GameLevel::getBricks()
+{
+	return m_bricks;
+}
+
 void GameLevel::init(std::vector<std::vector<unsigned int>> tileData, unsigned int levelWidth, unsigned int levelHeight)
 {
 	int height = tileData.size();
@@ -74,7 +79,8 @@ void GameLevel::init(std::vector<std::vector<unsigned int>> tileData, unsigned i
 					glm::vec2(brickWidth * x, brickHeight * y),
 					glm::vec2(brickWidth, brickHeight),
 					glm::vec2(0.0f),
-					glm::vec3(0.8f, 0.8f, 0.7f)
+					glm::vec3(0.8f, 0.8f, 0.7f),
+					true
 				);
 			}
 			else if (tileData[y][x] > 1) {
