@@ -12,8 +12,10 @@ public:
 	
 	bool isStuck() const;
 	void setStuckState(bool state);
+	bool m_stuck;
+	bool m_sticky;
+	bool m_passthrough;
 private:
 	float m_radius;
-	bool m_stuck;
 };
 

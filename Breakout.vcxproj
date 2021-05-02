@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\powerUp\powerUp.cpp" />
     <ClCompile Include="source\postProcessing\postProcessing.cpp" />
     <ClCompile Include="source\particleGenerator\particleGenerator.cpp" />
     <ClCompile Include="source\gameObject\ballObject\ballObject.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="source\spriteRenderer\spriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\powerUp\powerUp.h" />
     <ClInclude Include="source\postProcessing\postProcessing.h" />
     <ClInclude Include="source\particleGenerator\particleGenerator.h" />
     <ClInclude Include="source\gameObject\ballObject\ballObject.h" />

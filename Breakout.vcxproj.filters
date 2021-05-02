@@ -60,6 +60,9 @@
     <ClCompile Include="source\postProcessing\postProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\powerUp\powerUp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\application\application.h">
@@ -96,6 +99,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\postProcessing\postProcessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\powerUp\powerUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

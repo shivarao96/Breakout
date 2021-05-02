@@ -51,6 +51,12 @@ void GameMechanic::init()
 	ResourceHandler::get().loadTexture("assets/textures/block_solid.png", false, "block_solid");
 	ResourceHandler::get().loadTexture("assets/textures/paddle.png", true, "paddle");
 	ResourceHandler::get().loadTexture("assets/textures/particle.png", true, "particle");
+	ResourceHandler::get().loadTexture("assets/textures/speed.png", true, "powerup_speed");
+	ResourceHandler::get().loadTexture("assets/textures/sticky.png", true, "powerup_sticky");
+	ResourceHandler::get().loadTexture("assets/textures/pass-through.png", true, "powerup_pass-through");
+	ResourceHandler::get().loadTexture("assets/textures/increase-padd-size.png", true, "powerup_increase-padd-size");
+	ResourceHandler::get().loadTexture("assets/textures/confuse.png", true, "powerup_confuse");
+	ResourceHandler::get().loadTexture("assets/textures/chaos.png", true, "powerup_chaos");
 
 	m_gameLevels.emplace_back("assets/levels/standard.level", m_width, m_height / 2);
 	m_gameLevels.emplace_back("assets/levels/standard2.level", m_width, m_height / 2);
@@ -89,7 +95,7 @@ void GameMechanic::init()
 		m_height
 	);
 
-	m_currentlevel = 2;
+	m_currentlevel = 0;
 }
 
 void GameMechanic::update(float deltaTime)
@@ -129,6 +135,7 @@ void GameMechanic::update(float deltaTime)
 			m_pPostProcessing->m_shake = false;
 		}
 	}
+	updatePowerUps(deltaTime);
 }
 
 void GameMechanic::render()
@@ -140,6 +147,11 @@ void GameMechanic::render()
 		m_player->draw(*m_pSpriteRenderer);
 		m_pParticleGenerator->drawParticles();
 		m_pBall->draw(*m_pSpriteRenderer);
+		for (auto& powerup : m_powerUps) {
+			if (!powerup.isDestroyed()) {
+				powerup.draw(*m_pSpriteRenderer);
+			}
+		}
 		m_pPostProcessing->endRenderer();
 		m_pPostProcessing->renderPostProcessing(glfwGetTime());
 	}
@@ -187,7 +199,7 @@ void GameMechanic::clear()
 {
 }
 
-Collision GameMechanic::checkCollison(BallObject& ball, GameObject& gameObj)
+Collision GameMechanic::checkCollison(GameObject& ball, GameObject& gameObj)
 {
 	glm::vec2 ballCenter = glm::vec2(ball.getPos() + ballRadius);
 	glm::vec2 aabb_half_size = glm::vec2(gameObj.getSize().x / 2.0f, gameObj.getSize().y / 2.0f);
@@ -213,6 +225,7 @@ void GameMechanic::doCollisions()
 			if (collision.isCollided) {
 				if (!brick.isSolid()) {
 					brick.setDestroyedState(true);
+					spawnPowerUps(brick);
 				}
 				else {
 					ShakeTime = 0.5f;
@@ -220,26 +233,44 @@ void GameMechanic::doCollisions()
 				}
 				CollisionDirection dir = collision.direction;
 				const glm::vec2 diff = collision.difference;
-				if (dir == CollisionDirection::LEFT || dir == CollisionDirection::RIGHT) {
-					m_pBall->setVelocity(glm::vec2(-m_pBall->getVelocity().x, m_pBall->getVelocity().y));
-					float penetration = ballRadius - std::abs(diff.x);
-					if (dir == CollisionDirection::LEFT) {
-						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x + penetration, m_pBall->getPos().y));
+				
+				if (!(m_pBall->m_passthrough && !m_pBall->isSolid())) {
+					if (dir == CollisionDirection::LEFT || dir == CollisionDirection::RIGHT) {
+						m_pBall->setVelocity(glm::vec2(-m_pBall->getVelocity().x, m_pBall->getVelocity().y));
+						float penetration = ballRadius - std::abs(diff.x);
+						if (dir == CollisionDirection::LEFT) {
+							m_pBall->setPosition(glm::vec2(m_pBall->getPos().x + penetration, m_pBall->getPos().y));
+						}
+						else {
+							m_pBall->setPosition(glm::vec2(m_pBall->getPos().x - penetration, m_pBall->getPos().y));
+						}
 					}
 					else {
-						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x - penetration, m_pBall->getPos().y));
+						m_pBall->setVelocity(glm::vec2(m_pBall->getVelocity().x, -m_pBall->getVelocity().y));
+						float penetration = ballRadius - std::abs(diff.y);
+						if (dir == CollisionDirection::DOWN) {
+							m_pBall->setPosition(glm::vec2(m_pBall->getPos().x, m_pBall->getPos().y + penetration));
+						}
+						else {
+							m_pBall->setPosition(glm::vec2(m_pBall->getPos().x, m_pBall->getPos().y - penetration));
+						}
 					}
 				}
-				else {
-					m_pBall->setVelocity(glm::vec2(m_pBall->getVelocity().x, -m_pBall->getVelocity().y));
-					float penetration = ballRadius - std::abs(diff.y);
-					if (dir == CollisionDirection::DOWN) {
-						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x, m_pBall->getPos().y + penetration));
-					}
-					else {
-						m_pBall->setPosition(glm::vec2(m_pBall->getPos().x, m_pBall->getPos().y - penetration));
-					}
-				}
+
+			}
+		}
+	}
+
+	for (auto& powerUp : m_powerUps) {
+		if (!powerUp.isDestroyed()) {
+			if (powerUp.getPos().y > m_height) {
+				powerUp.setDestroyedState(true);
+			}
+			Collision collision = checkCollison(*m_player, powerUp);
+			if (collision.isCollided) {
+				activatePowerUp(powerUp);
+				powerUp.setDestroyedState(true);
+				powerUp.activated = true;
 			}
 		}
 	}
@@ -265,3 +296,127 @@ CollisionDirection GameMechanic::getCollisionDirection(const glm::vec2& differen
 	}
 	return (CollisionDirection)bestMatch;
 }
+
+void GameMechanic::spawnPowerUps(GameObject& obj)
+{
+	auto shouldSpawn = [&](unsigned int chance) {
+		const unsigned int random = rand() % chance;
+		return random == 0;
+	};
+
+	if (shouldSpawn(75)) {
+		m_powerUps.emplace_back(
+			"speed", glm::vec3(0.5f, 0.5f, 1.0f), 10.0f, obj.getPos(), ResourceHandler::get().getTexture("powerup_speed")
+		);
+	}
+	//if (shouldSpawn(75)) {
+	//	m_powerUps.emplace_back(
+	//		"sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f, obj.getPos(), ResourceHandler::get().getTexture("powerup_sticky")
+	//	);
+	//}
+	if (shouldSpawn(75)) {
+		m_powerUps.emplace_back(
+			"pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f, obj.getPos(), ResourceHandler::get().getTexture("powerup_pass-through")
+		);
+	}
+	if (shouldSpawn(75)) {
+		m_powerUps.emplace_back(
+			"pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4), 0.0f, obj.getPos(), ResourceHandler::get().getTexture("powerup_increase-padd-size")
+		);
+	}
+	if (shouldSpawn(15)) {
+		m_powerUps.emplace_back(
+			"confuse", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, obj.getPos(), ResourceHandler::get().getTexture("powerup_confuse")
+		);
+	}
+	if (shouldSpawn(15)) {
+		m_powerUps.emplace_back(
+			"chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, obj.getPos(), ResourceHandler::get().getTexture("powerup_chaos")
+		);
+	}
+}
+
+void GameMechanic::activatePowerUp(PowerUp& powerUp)
+{
+	if (powerUp.type == "speed") {
+		m_pBall->m_velocity *= 1.2;
+	}
+	//else if (powerUp.type == "sticky") {
+	//	m_pBall->m_sticky = true;
+	//	m_player->m_color = glm::vec3(1.0f, 0.5f, 1.0f);
+	//}
+	else if (powerUp.type == "pass-through") {
+		m_pBall->m_passthrough = true;
+		m_pBall->m_color = glm::vec3(1.0f, 0.5f, 0.5f);
+	}		
+	else if (powerUp.type == "powerup_increase-padd-size") {
+		m_player->m_size.x += 50;
+	}	
+	else if (powerUp.type == "confuse") {
+		if (!m_pPostProcessing->m_chaos) {
+			m_pPostProcessing->m_confuse = true;
+		}
+	}	
+	else if (powerUp.type == "chaos") {
+		if (!m_pPostProcessing->m_confuse) {
+			m_pPostProcessing->m_chaos = true;
+		}
+	}
+}
+
+void GameMechanic::updatePowerUps(float deltaTimer)
+{
+	for (auto& powerUps: m_powerUps) {
+		powerUps.m_position += powerUps.m_velocity * deltaTimer;
+		if (powerUps.activated) {
+			powerUps.duration -= deltaTimer;
+			if (powerUps.duration <= 0.0f) {
+				powerUps.activated = false;
+				if (powerUps.type == "sticky") {
+					if (!isOtherPowerActive("sticky")) {
+						m_pBall->m_sticky = false;
+					}
+				}
+				if (powerUps.type == "pass-through") {
+					if (!isOtherPowerActive("pass-through")) {
+						m_pBall->m_passthrough = false;
+						m_pBall->m_color = glm::vec3(1.0f);
+					}
+				}
+				if (powerUps.type == "confuse") {
+					if (!isOtherPowerActive("confuse")) {
+						m_pPostProcessing->m_confuse = false;
+					}
+				}
+				if (powerUps.type == "chaos") {
+					if (!isOtherPowerActive("chaos")) {
+						m_pPostProcessing->m_chaos = false;
+					}
+				}
+			}
+		}
+	}
+
+	m_powerUps.erase(
+		std::remove_if(
+			m_powerUps.begin(),
+			m_powerUps.end(),
+			[](const PowerUp& powerup){return !powerup.activated && powerup.isDestroyed(); }
+		),
+		m_powerUps.end()
+	);
+}
+
+bool GameMechanic::isOtherPowerActive(const std::string type)
+{
+	for (auto& powerup: m_powerUps) {
+		if (powerup.activated) {
+			if (powerup.type == type) {
+				return false;
+			}
+		}
+	}
+	return false;
+}
+
+
