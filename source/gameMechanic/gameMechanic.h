@@ -4,6 +4,7 @@
 #include "../gameLevel/gameLevel.h"
 #include "../gameObject/ballObject/ballObject.h"
 #include "../particleGenerator/particleGenerator.h"
+#include "../postProcessing/postProcessing.h";
 #include <glm/glm.hpp>
 
 class SpriteRenderer;
@@ -59,6 +60,7 @@ private:
 	
 	GameObject* m_player = nullptr;
 	BallObject* m_pBall = nullptr;
+	PostProcessing* m_pPostProcessing = nullptr;
 };
 
 

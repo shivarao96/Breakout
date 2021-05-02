@@ -23,8 +23,10 @@ public:
 	void generateTex(unsigned int width, unsigned int height, unsigned char* data);
 	void bindTex() const;
 	void clear();
-private:
+
 	unsigned int m_ID;
+
+private:
 	unsigned int m_Width;
 	unsigned int m_Height;
 	unsigned int m_InternalFormat;

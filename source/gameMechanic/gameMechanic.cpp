@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
+float ShakeTime = 0.0f;
+
 const glm::vec2 playerSize = {
 	100.0f,
 	20.0f
@@ -35,6 +37,8 @@ void GameMechanic::init()
 {
 	ResourceHandler::get().loadShader("shaders/sprite.vs", "shaders/sprite.fs", nullptr, "sprite");
 	ResourceHandler::get().loadShader("shaders/particle.vs", "shaders/particle.fs", nullptr, "particle");
+	ResourceHandler::get().loadShader("shaders/postProcessing.vs", "shaders/postProcessing.fs", nullptr, "postProcessing");
+
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_width), static_cast<float>(m_height), 0.0f, -1.0f, 1.0f);
 	ResourceHandler::get().getShader("sprite").setInt("image", 0, true);
 	ResourceHandler::get().getShader("sprite").setMatrix4("projection", projection);
@@ -79,6 +83,12 @@ void GameMechanic::init()
 		initialBallVelocity
 	);
 
+	m_pPostProcessing = new PostProcessing(
+		ResourceHandler::get().getShader("postProcessing"),
+		m_width,
+		m_height
+	);
+
 	m_currentlevel = 2;
 }
 
@@ -98,16 +108,40 @@ void GameMechanic::update(float deltaTime)
 	}
 	doCollisions();
 	m_pParticleGenerator->updateParticles(deltaTime, *m_pBall, 2, glm::vec2(ballRadius / 2.0f));
+	if (m_pBall->getPos().y > m_height) {
+		m_pBall->reset(
+			{
+				m_width / 2.0f - ballRadius,
+				m_height - (ballRadius * 2) - playerSize.y
+			},
+			initialBallVelocity
+		);
+		m_player->setPosition({
+			m_width / 2.0f - playerSize.x / 2.0f,
+			m_height - playerSize.y
+			}
+		);
+	}
+
+	if (ShakeTime > 0.0f) {
+		ShakeTime -= deltaTime;
+		if (ShakeTime <= 0.0f) {
+			m_pPostProcessing->m_shake = false;
+		}
+	}
 }
 
 void GameMechanic::render()
 {
 	if (m_state == GameState::GAME_ACTIVE) {
+		m_pPostProcessing->beginRenderer();
 		m_pSpriteRenderer->drawSprite(ResourceHandler::get().getTexture("background"), glm::vec2(0.0f, 0.0f), glm::vec2(m_width, m_height), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 		m_gameLevels[m_currentlevel].draw(*m_pSpriteRenderer);
 		m_player->draw(*m_pSpriteRenderer);
 		m_pParticleGenerator->drawParticles();
 		m_pBall->draw(*m_pSpriteRenderer);
+		m_pPostProcessing->endRenderer();
+		m_pPostProcessing->renderPostProcessing(glfwGetTime());
 	}
 
 }
@@ -179,6 +213,10 @@ void GameMechanic::doCollisions()
 			if (collision.isCollided) {
 				if (!brick.isSolid()) {
 					brick.setDestroyedState(true);
+				}
+				else {
+					ShakeTime = 0.5f;
+					m_pPostProcessing->m_shake = true;
 				}
 				CollisionDirection dir = collision.direction;
 				const glm::vec2 diff = collision.difference;
