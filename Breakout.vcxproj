@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\postProcessing\postProcessing.cpp" />
     <ClCompile Include="source\particleGenerator\particleGenerator.cpp" />
     <ClCompile Include="source\gameObject\ballObject\ballObject.cpp" />
     <ClCompile Include="source\gameLevel\gameLevel.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="source\spriteRenderer\spriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\postProcessing\postProcessing.h" />
     <ClInclude Include="source\particleGenerator\particleGenerator.h" />
     <ClInclude Include="source\gameObject\ballObject\ballObject.h" />
     <ClInclude Include="source\gameLevel\gameLevel.h" />
@@ -181,6 +183,8 @@
     <None Include="assets\levels\test.level" />
     <None Include="shaders\particle.fs" />
     <None Include="shaders\particle.vs" />
+    <None Include="shaders\postProcessing.fs" />
+    <None Include="shaders\postProcessing.vs" />
     <None Include="shaders\sprite.fs" />
     <None Include="shaders\sprite.vs" />
   </ItemGroup>

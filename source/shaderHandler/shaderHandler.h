@@ -17,7 +17,7 @@ public:
 	void clear();
 
 	unsigned int getShaderId();
-private:
 	unsigned int m_shaderId;
+private:
 };
 
