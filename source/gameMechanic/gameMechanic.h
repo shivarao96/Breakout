@@ -3,6 +3,7 @@
 #include <vector>
 #include "../gameLevel/gameLevel.h"
 #include "../gameObject/ballObject/ballObject.h"
+#include "../particleGenerator/particleGenerator.h"
 #include <glm/glm.hpp>
 
 class SpriteRenderer;
@@ -52,6 +53,7 @@ private:
 	int m_width, m_height;
 	Context* m_context = nullptr;
 	SpriteRenderer* m_pSpriteRenderer = nullptr;
+	ParticleGenerator* m_pParticleGenerator = nullptr;
 	std::vector<GameLevel> m_gameLevels;
 	unsigned int m_currentlevel = 0;
 	
