@@ -22,13 +22,13 @@ public:
 	void setSolidState(bool state);
 	void setPosition(const glm::vec2& pos);
 	void setVelocity(const glm::vec2& velocity);
-
-protected:
-	TextureHandler* m_pSprite = nullptr;
-	glm::vec2 m_position = glm::vec2(0.0f);
 	glm::vec2 m_velocity = glm::vec2(0.0f);
 	glm::vec2 m_size = glm::vec2(1.0f);
 	glm::vec3 m_color = glm::vec3(1.0f);
+	glm::vec2 m_position = glm::vec2(0.0f);
+
+protected:
+	TextureHandler* m_pSprite = nullptr;
 	float m_rotation = 0.0f;
 	bool m_isSolid = false;
 	bool m_isDestroyed = false;
